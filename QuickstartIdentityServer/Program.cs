@@ -22,10 +22,10 @@ namespace QuickstartIdentityServer
 
             var host = BuildWebHost(args);
 
-            if (seed)
-            {
+            //if (seed)
+            //{
                 SeedData.EnsureSeedData(host.Services);
-            }
+            //}
 
             host.Run();
         }
