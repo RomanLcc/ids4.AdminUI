@@ -33,7 +33,6 @@ namespace QuickstartIdentityServer
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
             .ConfigureAppConfiguration(c => {
-                
                 // config.AddApollo(hostingconfig.GetSection("apollo"))
                 //.AddNamespace("Net1.Test");
                 //c.AddDefault();
