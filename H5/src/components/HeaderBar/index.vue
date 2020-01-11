@@ -33,6 +33,7 @@
 
 <script>
     import mgr from '../../plugin/oidc'
+    import base from '../../plugin/base64'
     export default {
         name: "home",
         props: {
@@ -52,9 +53,12 @@
         },
 
         mounted() {
-            this.$http.get("/base/api/User/Current").then(u=>{
-                this.username = u.name;
-            })
+           var payload = base.getpayload();
+           this.username = payload.name;
+           console.log(payload);
+            // this.$http.get("/base/api/User/Current").then(u=>{
+            //     this.username = u.name;
+            // })
         },
         methods: {
             handleCommand(item){

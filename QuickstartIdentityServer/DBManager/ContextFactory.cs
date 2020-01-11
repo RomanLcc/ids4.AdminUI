@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore;
+﻿using IdentityServer4.EntityFramework.DbContexts;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -21,6 +22,28 @@ namespace QuickstartIdentityServer.DBManager
                  .UseStartup<Startup>()
                  .Build().Services;
             return serviceProvider.CreateScope().ServiceProvider.GetService<PermissionConext>();
+        }
+    }
+
+    public class PersistedGrantDbContextFactory : IDesignTimeDbContextFactory<PersistedGrantDbContext>
+    {
+        public PersistedGrantDbContext CreateDbContext(string[] args)
+        {
+            var serviceProvider = WebHost.CreateDefaultBuilder(args)
+                 .UseStartup<Startup>()
+                 .Build().Services;
+            return serviceProvider.CreateScope().ServiceProvider.GetService<PersistedGrantDbContext>();
+        }
+    }
+
+    public class ConfigurationDbContextFactory : IDesignTimeDbContextFactory<ConfigurationDbContext>
+    {
+        public ConfigurationDbContext CreateDbContext(string[] args)
+        {
+            var serviceProvider = WebHost.CreateDefaultBuilder(args)
+                 .UseStartup<Startup>()
+                 .Build().Services;
+            return serviceProvider.CreateScope().ServiceProvider.GetService<ConfigurationDbContext>();
         }
     }
 }

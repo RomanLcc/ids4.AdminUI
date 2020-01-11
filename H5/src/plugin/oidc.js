@@ -1,12 +1,12 @@
 import Oidc from 'oidc-client'
 
 var config = {
-  authority: "http://localhost:5000",
-  client_id: "js",
-  redirect_uri: "http://localhost:8080/callback.html",
+  authority: "https://localhost:44320",
+  client_id: "base",
+  redirect_uri: window.location.origin+"/callback.html",
   response_type: "id_token token",
   scope:"openid profile base",
-  post_logout_redirect_uri : "http://localhost:8080"
+  post_logout_redirect_uri : window.location.origin
 };
 
 // var config = {

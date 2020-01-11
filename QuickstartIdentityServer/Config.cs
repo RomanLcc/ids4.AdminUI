@@ -40,7 +40,7 @@ namespace QuickstartIdentityServer
                     ClientId = "client",
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
 
-                    ClientSecrets = 
+                    ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
@@ -53,7 +53,7 @@ namespace QuickstartIdentityServer
                     ClientId = "ro.client",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
 
-                    ClientSecrets = 
+                    ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
@@ -67,7 +67,7 @@ namespace QuickstartIdentityServer
                     ClientName = "MVC Client",
                     AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
 
-                    ClientSecrets = 
+                    ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
@@ -75,7 +75,7 @@ namespace QuickstartIdentityServer
                     RedirectUris = { "http://localhost:5002/signin-oidc" },
                     PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
 
-                    AllowedScopes = 
+                    AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
@@ -109,10 +109,11 @@ namespace QuickstartIdentityServer
                     ClientName = "base JavaScript Client",
                     AllowedGrantTypes = GrantTypes.Implicit,
                     AllowAccessTokensViaBrowser = true,
+                    RequireConsent = false,
 
-                    RedirectUris = { "http://localhost:8080" },
-                    PostLogoutRedirectUris = { "http://localhost:8080" },
-                    AllowedCorsOrigins = { "http://localhost:8080" },
+                    RedirectUris = { "https://localhost:8080/callback.html" },
+                    PostLogoutRedirectUris = { "https://localhost:8080" },
+                    AllowedCorsOrigins = { "https://localhost:8080" },
 
                     AllowedScopes =
                     {

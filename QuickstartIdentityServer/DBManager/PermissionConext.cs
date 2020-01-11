@@ -163,9 +163,12 @@ namespace QuickstartIdentityServer.DBManager
             var httpContextAccessor = provider.GetService<IHttpContextAccessor>();
             var httpContext = httpContextAccessor?.HttpContext;
             if (httpContext == null) return;
-            var subid = httpContext.User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub).Value;
-            int.TryParse(subid, out int userid);
-            UserId = userid;
+            var subid = httpContext.User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            if (subid != null)
+            {
+                int.TryParse(subid, out int userid);
+                UserId = userid;
+            }
         }
         private long GetUnixTimestamp()
         {

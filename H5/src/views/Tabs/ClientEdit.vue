@@ -19,6 +19,12 @@
                 <el-form-item label="访问token">
                     <el-switch v-model="data.allowAccessTokensViaBrowser"></el-switch>
                 </el-form-item>
+                <el-form-item label="授权提醒">
+                    <el-switch v-model="data.RequireConsent"></el-switch>
+                </el-form-item>
+                <el-form-item label="允许本地登入">
+                    <el-switch v-model="data.EnableLocalLogin"></el-switch>
+                </el-form-item>
                 <el-form-item label="登入跳转" prop='redirectUris'>
                     <el-input size='mini' v-model="data.redirectUris[0]"></el-input>
                 </el-form-item>
@@ -62,6 +68,8 @@
                     allowedGrantTypes:[],
                     allowedScopes:[],
                     allowAccessTokensViaBrowser:false,
+                    requireConsent:false,
+                    enableLocalLogin:true,
                     redirectUris:[""],
                     postLogoutRedirectUris:[""],
                     allowedCorsOrigins:[""]

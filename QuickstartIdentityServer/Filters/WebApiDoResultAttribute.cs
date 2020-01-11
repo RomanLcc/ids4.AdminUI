@@ -4,6 +4,7 @@ using QuickstartIdentityServer.CommonDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace QuickstartIdentityServer.Filters
@@ -28,6 +29,8 @@ namespace QuickstartIdentityServer.Filters
             {
                 var objresult = context.Result as ObjectResult;
                 if ((objresult.Value as BaseResult) != null)
+                    return;
+                if ((objresult.Value as HttpResponseMessage) != null)
                     return;
                 DataResult<object> result = new DataResult<object>(objresult.Value);
                 if (objresult.StatusCode.HasValue && objresult.StatusCode != 200) result.Result = false;

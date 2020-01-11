@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +16,10 @@ using QuickstartIdentityServer.Filters;
 
 namespace QuickstartIdentityServer.Apis
 {
-    [Authorize]
+    [Authorize(Roles = "admin")]
     [Route("base/api/[controller]/[action]")]
     [ApiController]
+    [WebApiExceptionFilter]
     public class UserController : ControllerBase
     {
         PermissionConext pcontext;
@@ -33,8 +35,7 @@ namespace QuickstartIdentityServer.Apis
         public async Task<UserNameDTO> Current()
         {
            var subid =  User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub).Value;
-           int.TryParse(subid, out int userid);
-           var user = await pcontext.User.Where(u => u.Id == userid).Select(u=>new UserNameDTO {
+           var user = await pcontext.User.Where(u => u.Account == subid).Select(u=>new UserNameDTO {
                Name = u.Name
            }).FirstOrDefaultAsync();
             return user;
@@ -156,11 +157,11 @@ namespace QuickstartIdentityServer.Apis
         [AllowAnonymous]
         public async Task<bool> Validate([FromBody]ValidatePermissionDTO input)
         {
-            bool isappadmin = await (from u in pcontext.User.Where(u => u.Id == input.UserId)
+            bool isappadmin = await (from u in pcontext.User.Where(u => u.Account == input.Account)
                             join urm in pcontext.UserRoleMap on u.Id equals urm.UserId
                             join ra in pcontext.RoleAppAdmin.Where(m => m.Code == input.Code) on urm.RoleId equals ra.RoleId select 1).AnyAsync();
             if (isappadmin) return true;
-            bool haspermission = await (from u in pcontext.User.Where(u => u.Id == input.UserId)
+            bool haspermission = await (from u in pcontext.User.Where(u => u.Account == input.Account)
                                   join urm in pcontext.UserRoleMap on u.Id equals urm.UserId
                                   join rmp in pcontext.RolePermissionMap.Where(m => m.Code == input.Code) on urm.RoleId equals rmp.RoleId
                                   join p in pcontext.Permission.Where(per=>per.ControllerName==input.Controller&&per.ActionName==input.Action) on rmp.PermissionId equals p.Id

@@ -10,7 +10,7 @@ namespace QuickstartIdentityServer.Apis.ApiDTO
         /// <summary>
         /// 用户id
         /// </summary>
-        public int UserId { get; set; }
+        public string Account { get; set; }
         /// <summary>
         /// 系统code
         /// </summary>

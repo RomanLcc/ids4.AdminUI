@@ -18,10 +18,14 @@ Vue.use(http);
 
 import './mixin'
 import mgr from './plugin/oidc'
+import base from './plugin/base64'
 
 var main = async ()=>{
   var user = await mgr.getUser();
-  if (user){
+  if (user&&user.expired===false){
+    console.log(user);
+    http.http.setheader(user.access_token);
+    base.user = user;
     new Vue({
       router,
       store,

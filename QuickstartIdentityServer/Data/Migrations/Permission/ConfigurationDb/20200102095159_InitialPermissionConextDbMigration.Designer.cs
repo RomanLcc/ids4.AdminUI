@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuickstartIdentityServer.DBManager;
 
 namespace QuickstartIdentityServer.Data.Migrations.Permission.ConfigurationDb
 {
     [DbContext(typeof(PermissionConext))]
-    partial class PermissionConextModelSnapshot : ModelSnapshot
+    [Migration("20200102095159_InitialPermissionConextDbMigration")]
+    partial class InitialPermissionConextDbMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -281,9 +283,8 @@ namespace QuickstartIdentityServer.Data.Migrations.Permission.ConfigurationDb
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Account")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
 
                     b.Property<int>("CreateId")
                         .HasColumnType("int");
@@ -302,8 +303,7 @@ namespace QuickstartIdentityServer.Data.Migrations.Permission.ConfigurationDb
                         .HasMaxLength(20);
 
                     b.Property<string>("ProviderName")
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Pwd")
                         .HasColumnType("nvarchar(32)")

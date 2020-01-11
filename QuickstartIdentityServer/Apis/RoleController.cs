@@ -13,9 +13,10 @@ using QuickstartIdentityServer.Filters;
 
 namespace QuickstartIdentityServer.Apis
 {
-    [Authorize]
+    [Authorize(Roles = "admin")]
     [Route("base/api/[controller]/[action]")]
     [ApiController]
+    [WebApiExceptionFilter]
     public class RoleController : ControllerBase
     {
         PermissionConext pcontext;

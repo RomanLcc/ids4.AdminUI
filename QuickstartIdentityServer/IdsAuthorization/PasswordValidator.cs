@@ -50,7 +50,7 @@ namespace QuickstartIdentityServer.IdsAuthorization
                     context.Result = new GrantValidationResult(TokenRequestErrors.UnauthorizedClient, "用户名或密码错误");
                     return;
                 }
-                context.Result = new GrantValidationResult(subject: user.Id.ToString(),
+                context.Result = new GrantValidationResult(subject: user.Account,
                     authenticationMethod: user.IsSystemAdmin ? ClaimsIdentityName.Admin : ClaimsIdentityName.Custom);
                     //claims: new Claim[] { new Claim(userinfo, user.IsSystemAdmin ? ClaimsIdentityName.Admin : ClaimsIdentityName.Custom) });
             }
