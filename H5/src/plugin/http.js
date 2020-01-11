@@ -149,9 +149,10 @@ var http = {
        if(token) this.header.Authorization = "Bearer " + token;
        else this.header.Authorization = null;
     },
-    async get(url) {
+    async get(url,config) {
+        if (!config) config = { headers: this.header };
         this.block();
-        const res = await axios.get(url).catch(res => res);
+        const res = await axios.get(url,config).catch(res => res);
         this.unblock();
         return handleResult(res);
 

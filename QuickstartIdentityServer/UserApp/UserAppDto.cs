@@ -13,6 +13,7 @@ namespace QuickstartIdentityServer.UserApp
     /// </summary>
     public class UserAppDto
     {
+        public int Id { get; set; }
         /// <summary>
         /// Gets or sets the subject identifier.
         /// </summary>
@@ -46,6 +47,6 @@ namespace QuickstartIdentityServer.UserApp
         /// <summary>
         /// Gets or sets the claims.
         /// </summary>
-        public ICollection<Claim> Claims { get; set; } = new HashSet<Claim>(new ClaimComparer());
+        public List<Claim> Claims { get; set; } = new List<Claim>();
     }
 }

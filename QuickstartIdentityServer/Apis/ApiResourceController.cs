@@ -10,16 +10,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuickstartIdentityServer.Apis.ApiDTO;
 using QuickstartIdentityServer.CommonDTO;
+using QuickstartIdentityServer.Filters;
 using QuickstartIdentityServer.IdsAuthorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace QuickstartIdentityServer.Apis
 {
-    [Authorize]
+    [Authorize(Roles ="admin")]
     [Route("base/api/[controller]/[action]")]
     [ApiController]
-    public class ApiResourceController : Controller
+    [WebApiExceptionFilter]
+    public class ApiResourceController : ControllerBase
     {
         ConfigurationDbContext context;
         /// <summary>
@@ -82,7 +84,8 @@ namespace QuickstartIdentityServer.Apis
             var apiresource = await context.ApiResources.FirstOrDefaultAsync(x => x.Name == input.Name);
             if (apiresource == null) throw new Exception("不存在该资源");
             context.Entry(apiresource).State = EntityState.Deleted;
-            var add = (new ApiResource(input.Name,input.DisplayName)).ToEntity();
+            var ar = new ApiResource(input.Name, input.DisplayName);
+            var add = ar.ToEntity();
             context.ApiResources.Add(add);
             await context.SaveChangesAsync();
         }

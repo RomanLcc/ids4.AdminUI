@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace QuickstartIdentityServer.Data.Migrations.Permission.ConfigurationDb
@@ -13,7 +12,7 @@ namespace QuickstartIdentityServer.Data.Migrations.Permission.ConfigurationDb
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Ts = table.Column<long>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
                     CreateId = table.Column<int>(nullable: false),
@@ -34,7 +33,7 @@ namespace QuickstartIdentityServer.Data.Migrations.Permission.ConfigurationDb
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Ts = table.Column<long>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
                     CreateId = table.Column<int>(nullable: false),
@@ -42,7 +41,8 @@ namespace QuickstartIdentityServer.Data.Migrations.Permission.ConfigurationDb
                     UpdateId = table.Column<int>(nullable: false),
                     UpdateTime = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(maxLength: 30, nullable: true),
-                    Code = table.Column<string>(nullable: true),
+                    Code = table.Column<string>(maxLength: 8, nullable: true),
+                    AppCode = table.Column<string>(maxLength: 8, nullable: true),
                     Order = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -55,7 +55,7 @@ namespace QuickstartIdentityServer.Data.Migrations.Permission.ConfigurationDb
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Ts = table.Column<long>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
                     CreateId = table.Column<int>(nullable: false),
@@ -79,7 +79,7 @@ namespace QuickstartIdentityServer.Data.Migrations.Permission.ConfigurationDb
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Ts = table.Column<long>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
                     CreateId = table.Column<int>(nullable: false),
@@ -98,8 +98,8 @@ namespace QuickstartIdentityServer.Data.Migrations.Permission.ConfigurationDb
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Code = table.Column<string>(nullable: true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(maxLength: 8, nullable: true),
                     RoleId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -108,11 +108,26 @@ namespace QuickstartIdentityServer.Data.Migrations.Permission.ConfigurationDb
                 });
 
             migrationBuilder.CreateTable(
+                name: "RoleModuleMap",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AppCode = table.Column<string>(maxLength: 8, nullable: true),
+                    ModuleId = table.Column<int>(nullable: false),
+                    RoleId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoleModuleMap", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RolePermissionMap",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(nullable: true),
                     PermissionId = table.Column<int>(nullable: false),
                     RoleId = table.Column<int>(nullable: false)
@@ -127,7 +142,7 @@ namespace QuickstartIdentityServer.Data.Migrations.Permission.ConfigurationDb
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Ts = table.Column<long>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
                     CreateId = table.Column<int>(nullable: false),
@@ -137,6 +152,7 @@ namespace QuickstartIdentityServer.Data.Migrations.Permission.ConfigurationDb
                     Account = table.Column<string>(maxLength: 20, nullable: true),
                     Name = table.Column<string>(maxLength: 20, nullable: true),
                     Pwd = table.Column<string>(maxLength: 32, nullable: true),
+                    ProviderName = table.Column<string>(nullable: true),
                     IsSystemAdmin = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -149,7 +165,7 @@ namespace QuickstartIdentityServer.Data.Migrations.Permission.ConfigurationDb
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(nullable: false),
                     RoleId = table.Column<int>(nullable: false)
                 },
@@ -171,14 +187,54 @@ namespace QuickstartIdentityServer.Data.Migrations.Permission.ConfigurationDb
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Module_Code",
+                name: "IX_Module_AppCode",
                 table: "Module",
-                column: "Code");
+                column: "AppCode");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Permission_ModuleId",
                 table: "Permission",
                 column: "ModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoleAppAdmin_Code",
+                table: "RoleAppAdmin",
+                column: "Code");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoleAppAdmin_RoleId",
+                table: "RoleAppAdmin",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoleModuleMap_AppCode",
+                table: "RoleModuleMap",
+                column: "AppCode");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoleModuleMap_ModuleId",
+                table: "RoleModuleMap",
+                column: "ModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoleModuleMap_RoleId",
+                table: "RoleModuleMap",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolePermissionMap_Code",
+                table: "RolePermissionMap",
+                column: "Code");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolePermissionMap_PermissionId",
+                table: "RolePermissionMap",
+                column: "PermissionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolePermissionMap_RoleId",
+                table: "RolePermissionMap",
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_Account",
@@ -209,6 +265,9 @@ namespace QuickstartIdentityServer.Data.Migrations.Permission.ConfigurationDb
 
             migrationBuilder.DropTable(
                 name: "RoleAppAdmin");
+
+            migrationBuilder.DropTable(
+                name: "RoleModuleMap");
 
             migrationBuilder.DropTable(
                 name: "RolePermissionMap");

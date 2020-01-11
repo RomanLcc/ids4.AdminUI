@@ -35,9 +35,9 @@ namespace QuickstartIdentityServer.UserApp
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns></returns>
-        public Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
+        public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
-            var user = _users.ValidateCredentials(context.UserName, context.Password);
+            var user = await _users.ValidateCredentials(context.UserName, context.Password);
             if (user != null)
             {
                 context.Result = new GrantValidationResult(
@@ -45,7 +45,7 @@ namespace QuickstartIdentityServer.UserApp
                     OidcConstants.AuthenticationMethods.Password, _clock.UtcNow.UtcDateTime, 
                     user.Claims);
             }
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
         }
     }
 }

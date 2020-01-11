@@ -11,6 +11,8 @@ using System;
 using QuickstartIdentityServer.DBManager;
 using IdentityServer4.Test;
 using QuickstartIdentityServer.Filters;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace QuickstartIdentityServer.UserApp
 {
@@ -36,9 +38,9 @@ namespace QuickstartIdentityServer.UserApp
         /// <param name="username">The username.</param>
         /// <param name="password">The password.</param>
         /// <returns></returns>
-        public UserAppDto ValidateCredentials(string username, string password)
+        public async Task<UserAppDto> ValidateCredentials(string username, string password)
         {
-            var user = FindByUsername(username);
+            var user = await FindBySubjectId(username);
             if (user != null)
             {
                 if (user.Password.Equals(EncryptUtil.GetMd5(password)))
@@ -55,40 +57,22 @@ namespace QuickstartIdentityServer.UserApp
         /// </summary>
         /// <param name="subjectId">The subject identifier.</param>
         /// <returns></returns>
-        public UserAppDto FindBySubjectId(string subjectId)
+        public async Task<UserAppDto> FindBySubjectId(string subjectId)
         {
             var user = _users.FirstOrDefault(u => u.SubjectId == subjectId);
             if (user == null)
             {
-                var userid = Convert.ToInt32(subjectId);
-                user = db.User.Where(u => u.Id == userid).Select(u => new UserAppDto
+                user = await db.User.Where(u => u.Account == subjectId).Select(u => new UserAppDto
                 {
-                    Username = u.Account,
+                    Id = u.Id,
+                    Username = u.Name,
                     Password = u.Pwd,
-                    SubjectId = u.Id.ToString()
-                }).FirstOrDefault();
+                    SubjectId = u.Account
+                }).FirstOrDefaultAsync();
+                var maps = await  db.UserRoleMap.Where(m=>m.UserId == user.Id).Select(m=>m.Role.Name).ToListAsync();
+                user.Claims.AddRange(maps.Select(m => new Claim(JwtClaimTypes.Role, m)));
+                user.Claims.AddRange(maps.Select(m => new Claim(JwtClaimTypes.Name, user.Username)));
                 _users.Add(user);
-            }
-            return user;
-        }
-
-        /// <summary>
-        /// Finds the user by username.
-        /// </summary>
-        /// <param name="username">The username.</param>
-        /// <returns></returns>
-        public UserAppDto FindByUsername(string username)
-        {
-            var user = _users.FirstOrDefault(u => u.Username == username);
-            if (user == null)
-            {
-                user = db.User.Where(u => u.Account == username).Select(u => new UserAppDto
-                {
-                    Username = u.Account,
-                    Password = u.Pwd,
-                    SubjectId = u.Id.ToString()
-                }).FirstOrDefault();
-               _users.Add(user);
             }
             return user;
         }
@@ -113,7 +97,7 @@ namespace QuickstartIdentityServer.UserApp
         /// <param name="userId">The user identifier.</param>
         /// <param name="claims">The claims.</param>
         /// <returns></returns>
-        public UserAppDto AutoProvisionUser(string provider, string userId, List<Claim> claims)
+        public async Task<UserAppDto> AutoProvisionUser(string provider, string userId, List<Claim> claims)
         {
             // create a list of claims that we want to transfer into our store
             var filtered = new List<Claim>();
@@ -156,26 +140,47 @@ namespace QuickstartIdentityServer.UserApp
                 }
             }
 
-            // create a new unique subject id
-            var sub = CryptoRandom.CreateUniqueId();
+            //// create a new unique subject id
+            //var sub = CryptoRandom.CreateUniqueId();
 
-            // check if a display name is available, otherwise fallback to subject id
-            var name = filtered.FirstOrDefault(c => c.Type == JwtClaimTypes.Name)?.Value ?? sub;
+            //// check if a display name is available, otherwise fallback to subject id
+            //var name = filtered.FirstOrDefault(c => c.Type == JwtClaimTypes.Name)?.Value ?? sub;
 
             // create new user
             var user = new UserAppDto
             {
-                SubjectId = sub,
-                Username = name,
+                SubjectId = userId,
+                //Username = name,
                 ProviderName = provider,
                 ProviderSubjectId = userId,
                 Claims = filtered
             };
 
+            var tu = await FindBySubjectId(userId);
+            if (tu == null)
+            {
+                db.User.Add(new UserEntity
+                {
+                    Account = userId,
+                    ProviderName = provider
+                });
+                await db.SaveChangesAsync();
+            }
+            else
+            {
+                user.Username = tu.Username;
+                user.Claims.AddRange(tu.Claims);
+            }
+
             // add user to in-memory store
             _users.Add(user);
 
             return user;
+        }
+
+        public void AddUser(UserAppDto user)
+        {
+            _users.Add(user);
         }
     }
 }

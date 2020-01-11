@@ -356,7 +356,7 @@
             创建时间
             </summary>
         </member>
-        <member name="P:QuickstartIdentityServer.Apis.ApiDTO.ValidatePermissionDTO.UserId">
+        <member name="P:QuickstartIdentityServer.Apis.ApiDTO.ValidatePermissionDTO.Account">
             <summary>
             用户id
             </summary>
@@ -1042,6 +1042,11 @@
             密码
             </summary>
         </member>
+        <member name="P:QuickstartIdentityServer.DBManager.UserEntity.ProviderName">
+            <summary>
+            Gets or sets the provider name.
+            </summary>
+        </member>
         <member name="P:QuickstartIdentityServer.DBManager.UserEntity.IsSystemAdmin">
             <summary>
             是否是系统所有者
@@ -1076,17 +1081,6 @@
             <summary>
             
             </summary>
-        </member>
-        <member name="T:QuickstartIdentityServer.Filters.PostCacheAttribute">
-            <summary>
-            Post 缓存开启
-            </summary>
-        </member>
-        <member name="M:QuickstartIdentityServer.Filters.PostCacheAttribute.#ctor(System.Int32)">
-            <summary>
-            缓存时间  单位秒
-            </summary>
-            <param name="expiry"></param>
         </member>
         <member name="T:QuickstartIdentityServer.Filters.EncryptUtil">
             <summary>
@@ -1125,7 +1119,7 @@
             </summary>
             <param name="context"></param>
         </member>
-        <member name="M:QuickstartIdentityServer.IdsAuthorization.IdsAuthPermissionHandler.HandleRequirementAsync(Microsoft.AspNetCore.Authorization.AuthorizationHandlerContext,QuickstartIdentityServer.IdsAuthorization.IdsAuthPermissionHandler)">
+        <member name="M:QuickstartIdentityServer.IdsAuthorization.IdsAuthPermissionHandler.HandleRequirementAsync(Microsoft.AspNetCore.Authorization.AuthorizationHandlerContext,QuickstartIdentityServer.IdsAuthorization.IdsAuthPermissionRequirement)">
             <summary>
             Handles the requirement async.
             </summary>
@@ -1159,6 +1153,13 @@
             <summary>
             
             </summary>
+        </member>
+        <member name="M:QuickstartIdentityServer.Program.BuildWebHost(System.String[])">
+            <summary>
+            BuildWebHost
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
         </member>
         <member name="M:QuickstartIdentityServer.Startup.GetXmlCommentsPath(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.String)">
             <summary>
@@ -1301,13 +1302,6 @@
             Finds the user by subject identifier.
             </summary>
             <param name="subjectId">The subject identifier.</param>
-            <returns></returns>
-        </member>
-        <member name="M:QuickstartIdentityServer.UserApp.UserStore.FindByUsername(System.String)">
-            <summary>
-            Finds the user by username.
-            </summary>
-            <param name="username">The username.</param>
             <returns></returns>
         </member>
         <member name="M:QuickstartIdentityServer.UserApp.UserStore.FindByExternalProvider(System.String,System.String)">

@@ -102,7 +102,7 @@ namespace IdentityServer4.Quickstart.UI
             if (ModelState.IsValid)
             {
                 // validate username/password against in-memory store
-                var user = _users.ValidateCredentials(model.Username, model.Password);
+                var user = await _users.ValidateCredentials(model.Username, model.Password);
                 if (user !=null)
                 {
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.Username, user.SubjectId, user.Username));
@@ -120,7 +120,7 @@ namespace IdentityServer4.Quickstart.UI
                     };
 
                     // issue authentication cookie with subject ID and username
-                    await HttpContext.SignInAsync(user.SubjectId, user.Username, props);
+                    await HttpContext.SignInAsync(user.SubjectId, user.Username, props, user.Claims.ToArray());
 
                     // make sure the returnUrl is still valid, and if so redirect back to authorize endpoint or a local page
                     // the IsLocalUrl check is only necessary if you want to support additional local pages, otherwise IsValidReturnUrl is more strict
@@ -189,7 +189,7 @@ namespace IdentityServer4.Quickstart.UI
                 // this might be where you might initiate a custom workflow for user registration
                 // in this sample we don't show how that would be done, as our sample implementation
                 // simply auto-provisions new external user
-                user = AutoProvisionUser(provider, providerUserId, claims);
+                user = await AutoProvisionUser(provider, providerUserId, claims);
             }
 
             // this allows us to collect any additonal claims or properties
@@ -203,8 +203,8 @@ namespace IdentityServer4.Quickstart.UI
 
             // issue authentication cookie for user
             await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.SubjectId, user.Username));
-            await HttpContext.SignInAsync(user.SubjectId, user.Username, provider, localSignInProps, additionalLocalClaims.ToArray());
-
+            //await HttpContext.SignInAsync(user.SubjectId, user.Username, provider, localSignInProps, additionalLocalClaims.ToArray());
+            await HttpContext.SignInAsync(user.SubjectId, user.Username, provider, localSignInProps, user.Claims.ToArray());
             // delete temporary cookie used during external authentication
             await HttpContext.SignOutAsync(IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme);
 
@@ -467,9 +467,9 @@ namespace IdentityServer4.Quickstart.UI
             return (user, provider, providerUserId, claims);
         }
 
-        private UserAppDto AutoProvisionUser(string provider, string providerUserId, IEnumerable<Claim> claims)
+        private async Task<UserAppDto> AutoProvisionUser(string provider, string providerUserId, IEnumerable<Claim> claims)
         {
-            var user = _users.AutoProvisionUser(provider, providerUserId, claims.ToList());
+            var user = await _users.AutoProvisionUser(provider, providerUserId, claims.ToList());
             return user;
         }
 

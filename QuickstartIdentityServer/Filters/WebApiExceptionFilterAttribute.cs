@@ -42,13 +42,7 @@ namespace QuickstartIdentityServer.Filters
             var requestparam = $"请求参数:{ Newtonsoft.Json.JsonConvert.SerializeObject(context.RouteData.Values)}";
             ErrorResult result = new ErrorResult(ex);
 
-            if (ex is SqlException)
-            {
-                result.Code = "1001";
-                result.Message = "不好啦!数据库连接错误,请联系管理员!";
-                log.LogError(ex, $"数据库访问异常,Request={requestparam};");
-            }
-            else if(ex is DbException)
+             if(ex is DbException)
             {
                 result.Code = "1002";
                 result.Message = $"数据库更新错误:{ex.Message}";

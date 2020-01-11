@@ -26,6 +26,10 @@ namespace QuickstartIdentityServer.DBManager
         /// </summary>
         public string Pwd { set; get; }
         /// <summary>
+        /// Gets or sets the provider name.
+        /// </summary>
+        public string ProviderName { get; set; }
+        /// <summary>
         /// 是否是系统所有者
         /// </summary>
         public bool IsSystemAdmin { set; get; }
@@ -37,9 +41,10 @@ namespace QuickstartIdentityServer.DBManager
     {
         public void Configure(EntityTypeBuilder<UserEntity> builder)
         {
-            builder.Property(u=>u.Account).HasMaxLength(20);
+            builder.Property(u=>u.Account).HasMaxLength(50).IsRequired();
             builder.Property(u=>u.Name).HasMaxLength(20);
             builder.Property(u=>u.Pwd).HasMaxLength(32);
+            builder.Property(u=>u.ProviderName).HasMaxLength(20);
             builder.HasIndex(u => u.Account);
         }
     }

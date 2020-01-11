@@ -5,54 +5,54 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using StackExchange.Redis;
+//using StackExchange.Redis;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using QuickstartIdentityServer.CommonDTO;
 
 namespace QuickstartIdentityServer.Filters
 {
-    /// <summary>
-    /// Post 缓存开启
-    /// </summary>
-    public class PostCacheAttribute : ActionFilterAttribute
-    {
-        private static string cache_dir = "dmp:";
-        private readonly int expiry;
+    ///// <summary>
+    ///// Post 缓存开启
+    ///// </summary>
+    //public class PostCacheAttribute : ActionFilterAttribute
+    //{
+    //    private static string cache_dir = "dmp:";
+    //    private readonly int expiry;
 
-        /// <summary>
-        /// 缓存时间  单位秒
-        /// </summary>
-        /// <param name="expiry"></param>
-        public PostCacheAttribute(int expiry = 20)
-        {
-            this.expiry = expiry;
-        }
-        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
-        {
-            var key = cache_dir + EncryptUtil.GetMd5(context.HttpContext.Request.Path + JsonConvert.SerializeObject(context.ActionArguments));
-            var db = context.HttpContext.RequestServices.GetService<IDatabase>();
-            var cache = await db.StringGetAsync(key);
-            if (cache.HasValue)
-            {
-                context.Result = new JsonResult(JsonConvert.DeserializeObject<object>(cache));
-                return;
-            }
-            var executedContext = await next();
-            if (executedContext.Result is Microsoft.AspNetCore.Mvc.ObjectResult objresult)
-            {
-                DataResult<object> result = new DataResult<object>(objresult.Value);
-                if (result.Result)
-                {
-                    var setting = new JsonSerializerSettings
-                    {
-                        ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
-                    };
-                    await db.StringSetAsync(key, JsonConvert.SerializeObject(result, setting), TimeSpan.FromSeconds(expiry));
-                }
-            }
-        }
-    }
+    //    /// <summary>
+    //    /// 缓存时间  单位秒
+    //    /// </summary>
+    //    /// <param name="expiry"></param>
+    //    public PostCacheAttribute(int expiry = 20)
+    //    {
+    //        this.expiry = expiry;
+    //    }
+    //    public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    //    {
+    //        var key = cache_dir + EncryptUtil.GetMd5(context.HttpContext.Request.Path + JsonConvert.SerializeObject(context.ActionArguments));
+    //        var db = context.HttpContext.RequestServices.GetService<IDatabase>();
+    //        var cache = await db.StringGetAsync(key);
+    //        if (cache.HasValue)
+    //        {
+    //            context.Result = new JsonResult(JsonConvert.DeserializeObject<object>(cache));
+    //            return;
+    //        }
+    //        var executedContext = await next();
+    //        if (executedContext.Result is Microsoft.AspNetCore.Mvc.ObjectResult objresult)
+    //        {
+    //            DataResult<object> result = new DataResult<object>(objresult.Value);
+    //            if (result.Result)
+    //            {
+    //                var setting = new JsonSerializerSettings
+    //                {
+    //                    ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
+    //                };
+    //                await db.StringSetAsync(key, JsonConvert.SerializeObject(result, setting), TimeSpan.FromSeconds(expiry));
+    //            }
+    //        }
+    //    }
+    //}
 
     /// <summary>
     /// 加密帮助类

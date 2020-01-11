@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuickstartIdentityServer.Apis.ApiDTO;
 using QuickstartIdentityServer.CommonDTO;
+using QuickstartIdentityServer.Filters;
 using QuickstartIdentityServer.IdsAuthorization;
 
 namespace QuickstartIdentityServer.Apis
@@ -19,9 +19,10 @@ namespace QuickstartIdentityServer.Apis
     /// <summary>
     /// Clients controller.
     /// </summary>
-    [Authorize]
+    [Authorize(Roles = "admin")]
     [Route("base/api/[controller]/[action]")]
     [ApiController]
+    [WebApiExceptionFilter]
     public class ClientController : ControllerBase
     {
         ConfigurationDbContext context;

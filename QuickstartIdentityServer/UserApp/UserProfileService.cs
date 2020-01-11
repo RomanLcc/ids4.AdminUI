@@ -43,13 +43,13 @@ namespace QuickstartIdentityServer.UserApp
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns></returns>
-        public virtual Task GetProfileDataAsync(ProfileDataRequestContext context)
+        public virtual async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
             context.LogProfileRequest(Logger);
 
             if (context.RequestedClaimTypes.Any())
             {
-                var user = Users.FindBySubjectId(context.Subject.GetSubjectId());
+                var user = await Users.FindBySubjectId(context.Subject.GetSubjectId());
                 if (user != null)
                 {
                     context.AddRequestedClaims(user.Claims);
@@ -58,7 +58,7 @@ namespace QuickstartIdentityServer.UserApp
 
             context.LogIssuedClaims(Logger);
 
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
         }
 
         /// <summary>
@@ -67,14 +67,14 @@ namespace QuickstartIdentityServer.UserApp
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns></returns>
-        public virtual Task IsActiveAsync(IsActiveContext context)
+        public virtual async Task IsActiveAsync(IsActiveContext context)
         {
             Logger.LogDebug("IsActive called from: {caller}", context.Caller);
 
-            var user = Users.FindBySubjectId(context.Subject.GetSubjectId());
+            var user = await Users.FindBySubjectId(context.Subject.GetSubjectId());
             context.IsActive = user?.IsActive == true;
 
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
         }
     }
 }
